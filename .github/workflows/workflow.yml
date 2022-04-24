@@ -70,7 +70,7 @@ jobs:
           port: 22
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: .dev.env
+          source: dev.env
           target: /home/${{ secrets.SSH_USERNAME }}
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
@@ -85,4 +85,4 @@ jobs:
             docker pull kokolaz/mini-project-test:latest
             docker pull kokolaz/mini-project-test-coverage:latest
             docker run -d --rm --name mini-project-test-coverage -p 8000:80 kokolaz/mini-project-test-coverage:latest
-            docker run -d --rm --name mini-project-test -p 80:8080 --env-file=.dev.env --network jaringan kokolaz/mini-project-test:latest
+            docker run -d --rm --name mini-project-test -p 80:8080 --env-file=dev.env --network jaringan kokolaz/mini-project-test:latest
