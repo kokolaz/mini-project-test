@@ -74,9 +74,10 @@
 				<version>0.8.5</version>
 				<configuration>
 					<excludes>
-						<exclude>**/Application.class</exclude>
+						<exclude>**/DemoApplication.class</exclude>
 						<exclude>**/config/*.class</exclude>
 						<exclude>**/constant/*.class</exclude>
+						<exclude>**/controller/*.class</exclude>
 						<exclude>**/domain/**/*.class</exclude>
 						<exclude>**/repository/*.class</exclude>
 					</excludes>
