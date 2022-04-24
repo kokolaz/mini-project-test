@@ -1,4 +1,4 @@
-package com.section26.demo;
+package com.alterra.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
