@@ -30,7 +30,7 @@ public abstract class BaseDao {
     @PrePersist
     void onCreated(){
         this.createdAt = LocalDateTime.now();
-        this.createdBy = "JOKOWI";
+        this.createdBy = "kokolaz";
         this.isdeleted = Boolean.FALSE;
     }
 
