@@ -17,9 +17,14 @@ public class RestaurantController {
     @Autowired
     private RestaurantService restaurantService;
 
-    @GetMapping("/")
-    public ResponseEntity<Object> get() {
-        return restaurantService.getAllRestaurant();
+//    @GetMapping("/")
+//    public ResponseEntity<Object> get() {
+//        return restaurantService.getAllRestaurant();
+//    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> get(@PathVariable Long id) {
+        return restaurantService.getRestaurantById(id);
     }
 
     @PostMapping("/")

@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Data
 @Entity
@@ -27,9 +29,34 @@ public class UsersDao extends BaseDao {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(columnDefinition ="boolean default true")
+    private boolean active = true;
+
     @ManyToOne
     private CityDao city;
 
-    @Column(name = "is_admin", nullable = false)
-    private Boolean isAdmin = false;
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return null;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return this.active;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return this.active;
+//    }
+//
+//    @Override
+//    public boolean isCredentialsNonExpired() {
+//        return this.active;
+//    }
+//
+//    @Override
+//    public boolean isEnabled() {
+//        return this.active;
+//    }
 }

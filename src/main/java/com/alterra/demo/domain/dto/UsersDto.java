@@ -15,5 +15,4 @@ public class UsersDto {
     private Long id;
     private String name;
     private CityDto city;
-    private Boolean isAdmin;
 }

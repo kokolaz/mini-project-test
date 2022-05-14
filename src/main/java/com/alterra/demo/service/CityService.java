@@ -1,5 +1,6 @@
 package com.alterra.demo.service;
 
+import com.alterra.demo.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,10 @@ import java.util.Optional;
 import com.alterra.demo.domain.dao.*;
 import com.alterra.demo.domain.dto.*;
 import com.alterra.demo.repository.*;
-import com.alterra.demo.response.BaseResponse;
 
 @Service
 public class CityService {
+
     @Autowired
     private CityRepository cityRepository;
 
@@ -33,7 +34,20 @@ public class CityService {
                     .build());
         }
 
-        return BaseResponse.build(HttpStatus.OK, KEY_FOUND, cityDtoList);
+        return ResponseUtil.build(KEY_FOUND, cityDtoList, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> getCityById(Long id){
+        Optional<CityDao> cityDaoOptional = cityRepository.findById(id);
+        if (cityDaoOptional.isEmpty()){
+                return ResponseUtil.build(KEY_NOT_FOUND,null ,HttpStatus.BAD_REQUEST);
+        }
+        CityDao cityDao = cityDaoOptional.get();
+
+        return ResponseUtil.build(KEY_FOUND, CityDto.builder()
+                .id(cityDao.getId())
+                .cityName(cityDao.getCityName())
+                .build(), HttpStatus.OK);
     }
 
     public ResponseEntity<Object> createNewCity(CityDto city){
@@ -42,37 +56,37 @@ public class CityService {
                 .cityName(city.getCityName())
                 .build();
 
-        cityRepository.save(cityDao);
-        return BaseResponse.build(HttpStatus.CREATED, KEY_FOUND, CityDto.builder()
+        cityDao = cityRepository.save(cityDao);
+        return ResponseUtil.build(KEY_FOUND, CityDto.builder()
                 .id(cityDao.getId())
                 .cityName(cityDao.getCityName())
-                .build());
+                .build(), HttpStatus.CREATED);
     }
 
     public ResponseEntity<Object> updateCity(Long id,CityDto update){
         Optional<CityDao> cityDaoOptional = cityRepository.findById(id);
         if (cityDaoOptional.isEmpty()){
-            return BaseResponse.build(HttpStatus.BAD_REQUEST,KEY_NOT_FOUND,null);
+            return ResponseUtil.build(KEY_NOT_FOUND,null ,HttpStatus.BAD_REQUEST);
         }
 
         CityDao cityDao = cityDaoOptional.get();
         cityDao.setCityName(update.getCityName());
-        cityRepository.save(cityDao);
+        cityDao = cityRepository.save(cityDao);
 
-        return BaseResponse.build(HttpStatus.OK,KEY_FOUND,CityDto.builder()
+        return ResponseUtil.build(KEY_FOUND,CityDto.builder()
                 .id(cityDao.getId())
                 .cityName(cityDao.getCityName())
-                .build());
+                .build(), HttpStatus.OK);
     }
 
     public ResponseEntity<Object> deleteCity(Long id){
         Optional<CityDao> cityDaoOptional = cityRepository.findById(id);
 
         if (cityDaoOptional.isEmpty()) {
-            return BaseResponse.build(HttpStatus.BAD_REQUEST, KEY_NOT_FOUND, null);
+            return ResponseUtil.build(KEY_NOT_FOUND,null ,HttpStatus.BAD_REQUEST);
         }
 
         cityRepository.deleteById(id);
-        return BaseResponse.build(HttpStatus.OK,KEY_FOUND,null);
+        return ResponseUtil.build(KEY_FOUND,null ,HttpStatus.OK);
     }
 }

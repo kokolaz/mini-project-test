@@ -14,9 +14,9 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
-    @GetMapping("/")
-    public ResponseEntity<Object> get() {
-        return menuService.getAllMenu();
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> get(@PathVariable Long id) {
+        return menuService.getMenuById(id);
     }
 
     @PostMapping("/")

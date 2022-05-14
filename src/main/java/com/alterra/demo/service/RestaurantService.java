@@ -1,5 +1,6 @@
 package com.alterra.demo.service;
 
+import com.alterra.demo.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,6 @@ import java.util.Optional;
 import com.alterra.demo.domain.dao.*;
 import com.alterra.demo.domain.dto.*;
 import com.alterra.demo.repository.*;
-import com.alterra.demo.response.BaseResponse;
 
 @Service
 public class RestaurantService {
@@ -28,38 +28,59 @@ public class RestaurantService {
     @Autowired
     private CityRepository cityRepository;
 
-    public ResponseEntity<Object> getAllRestaurant(){
-        List<RestaurantDao> restaurantDaoList = restaurantRepository.findAll();
-        List<RestaurantDto> restaurantDtoList = new ArrayList<>();
+//    public ResponseEntity<Object> getAllRestaurant(){
+//        List<RestaurantDao> restaurantDaoList = restaurantRepository.findAll();
+//        List<RestaurantDto> restaurantDtoList = new ArrayList<>();
+//
+//        for(RestaurantDao restaurantDao: restaurantDaoList){
+//            Optional<CityDao> cityDaoOptional = cityRepository.findById(restaurantDao.getCity().getId());
+//            Optional<UsersDao> usersDaoOptional = usersRepository.findById(restaurantDao.getOwnerId().getId());
+//            restaurantDtoList.add(RestaurantDto.builder()
+//                    .id(restaurantDao.getId())
+//                    .city(CityDto.builder()
+//                            .id(cityDaoOptional.get().getId())
+//                            .cityName(cityDaoOptional.get().getCityName())
+//                            .build())
+//                    .restaurantName(restaurantDao.getRestaurantName())
+//                    .ownerId(UsersDto.builder()
+//                            .id(usersDaoOptional.get().getId())
+//                            .name(usersDaoOptional.get().getName())
+//                            .build())
+//                    .build());
+//        }
+//
+//        return ResponseUtil.build(KEY_FOUND, restaurantDtoList, HttpStatus.OK);
+//    }
 
-        for(RestaurantDao restaurantDao: restaurantDaoList){
-            Optional<CityDao> cityDaoOptional = cityRepository.findById(restaurantDao.getCity().getId());
-            Optional<UsersDao> usersDaoOptional = usersRepository.findById(restaurantDao.getOwnerId().getId());
-            restaurantDtoList.add(RestaurantDto.builder()
-                    .id(restaurantDao.getId())
-                    .city(CityDto.builder()
-                            .id(cityDaoOptional.get().getId())
-                            .cityName(cityDaoOptional.get().getCityName())
-                            .build())
-                    .restaurantName(restaurantDao.getRestaurantName())
-                    .ownerId(UsersDto.builder()
-                            .id(usersDaoOptional.get().getId())
-                            .name(usersDaoOptional.get().getName())
-                            .build())
-                    .build());
+    public ResponseEntity<Object> getRestaurantById(Long id){
+        Optional<RestaurantDao> restaurantDaoOptional = restaurantRepository.findById(id);
+        if (restaurantDaoOptional.isEmpty()){
+            return ResponseUtil.build(KEY_NOT_FOUND,null ,HttpStatus.BAD_REQUEST);
         }
+        RestaurantDao restaurantDao = restaurantDaoOptional.get();
 
-        return BaseResponse.build(HttpStatus.OK, KEY_FOUND, restaurantDtoList);
+        return ResponseUtil.build(KEY_FOUND, RestaurantDto.builder()
+                .id(restaurantDao.getId())
+                .city(CityDto.builder()
+                        .id(restaurantDao.getCity().getId())
+                        .cityName(restaurantDao.getCity().getCityName())
+                        .build())
+                .restaurantName(restaurantDao.getRestaurantName())
+                .ownerId(UsersDto.builder()
+                        .id(restaurantDao.getOwnerId().getId())
+                        .name(restaurantDao.getOwnerId().getName())
+                        .build())
+                .build(), HttpStatus.OK);
     }
 
     public ResponseEntity<Object> createNewRestaurant(RestaurantDto restaurant){
         Optional<CityDao> cityDao = cityRepository.findById(restaurant.getCity().getId());
         if (cityDao.isEmpty())
-            return BaseResponse.build(HttpStatus.BAD_REQUEST,KEY_NOT_FOUND,null);
+            return ResponseUtil.build(KEY_NOT_FOUND,null, HttpStatus.BAD_REQUEST);
 
         Optional<UsersDao> usersDao = usersRepository.findById(restaurant.getOwnerId().getId());
         if (usersDao.isEmpty())
-            return BaseResponse.build(HttpStatus.BAD_REQUEST,KEY_NOT_FOUND,null);
+            return ResponseUtil.build(KEY_NOT_FOUND,null, HttpStatus.BAD_REQUEST);
 
         RestaurantDao restaurantDao = RestaurantDao
                 .builder()
@@ -68,8 +89,8 @@ public class RestaurantService {
                 .ownerId(usersDao.get())
                 .build();
 
-        restaurantRepository.save(restaurantDao);
-        return BaseResponse.build(HttpStatus.CREATED, KEY_FOUND, RestaurantDto.builder()
+        restaurantDao = restaurantRepository.save(restaurantDao);
+        return ResponseUtil.build(KEY_FOUND, RestaurantDto.builder()
                 .id(restaurantDao.getId())
                 .restaurantName(restaurantDao.getRestaurantName())
                 .city(
@@ -86,23 +107,23 @@ public class RestaurantService {
                                 .name(usersDao.get().getName())
                                 .build()
                 )
-                .build());
+                .build(), HttpStatus.CREATED);
     }
 
     public ResponseEntity<Object> updateRestaurant(Long id,RestaurantDto update){
         Optional<RestaurantDao> restaurantDaoOptional = restaurantRepository.findById(id);
         if (restaurantDaoOptional.isEmpty()){
-            return BaseResponse.build(HttpStatus.BAD_REQUEST,KEY_NOT_FOUND,null);
+            return ResponseUtil.build(KEY_NOT_FOUND,null, HttpStatus.BAD_REQUEST);
         }
 
         Optional<UsersDao> UserDaoOptional = usersRepository.findById(update.getOwnerId().getId());
         if (UserDaoOptional.isEmpty()){
-            return BaseResponse.build(HttpStatus.BAD_REQUEST,KEY_NOT_FOUND,null);
+            return ResponseUtil.build(KEY_NOT_FOUND,null, HttpStatus.BAD_REQUEST);
         }
 
         Optional<CityDao> cityDaoOptional = cityRepository.findById(update.getCity().getId());
         if (cityDaoOptional.isEmpty()){
-            return BaseResponse.build(HttpStatus.BAD_REQUEST,KEY_NOT_FOUND,null);
+            return ResponseUtil.build(KEY_NOT_FOUND,null, HttpStatus.BAD_REQUEST);
         }
 
         RestaurantDao restaurantDao = restaurantDaoOptional.get();
@@ -111,7 +132,7 @@ public class RestaurantService {
         restaurantDao.setOwnerId(UserDaoOptional.get());
         restaurantRepository.save(restaurantDao);
 
-        return BaseResponse.build(HttpStatus.OK,KEY_FOUND,RestaurantDto.builder()
+        return ResponseUtil.build(KEY_FOUND,RestaurantDto.builder()
                 .id(restaurantDao.getId())
                 .restaurantName(restaurantDao.getRestaurantName())
                 .city(CityDto.builder()
@@ -122,17 +143,17 @@ public class RestaurantService {
                         .id(restaurantDao.getOwnerId().getId())
                         .name(restaurantDao.getOwnerId().getName())
                         .build())
-                .build());
+                .build(), HttpStatus.OK);
     }
 
     public ResponseEntity<Object> deleteRestaurant(Long id){
         Optional<RestaurantDao> restaurantDaoOptional = restaurantRepository.findById(id);
 
         if (restaurantDaoOptional.isEmpty()) {
-            return BaseResponse.build(HttpStatus.BAD_REQUEST, KEY_NOT_FOUND, null);
+            return ResponseUtil.build(KEY_NOT_FOUND, null, HttpStatus.BAD_REQUEST);
         }
 
         restaurantRepository.deleteById(id);
-        return BaseResponse.build(HttpStatus.OK,KEY_FOUND,null);
+        return ResponseUtil.build(KEY_FOUND,null, HttpStatus.OK);
     }
 }
