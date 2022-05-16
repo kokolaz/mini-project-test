@@ -2,6 +2,6 @@
 
 ## Endpoint
 
-[Hello World](http://3.88.161.1/)
+[API Documentation using Swagger UI](http://3.88.161.1/swagger-ui/index.html)
 
 [Jacoco](http://3.88.161.1:8000/)
