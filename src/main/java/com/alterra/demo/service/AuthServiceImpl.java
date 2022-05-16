@@ -1,9 +1,7 @@
 package com.alterra.demo.service;
 
-import com.alterra.demo.domain.dao.*;
 import com.alterra.demo.domain.model.*;
 import com.alterra.demo.repository.AdminRepository;
-import com.alterra.demo.repository.UsersRepository;
 import com.alterra.demo.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
