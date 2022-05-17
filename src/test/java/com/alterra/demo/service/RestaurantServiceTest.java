@@ -131,24 +131,6 @@ public class RestaurantServiceTest {
                 assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
         }
 
-        @Test
-        public void updateRestaurant_Failed2() {
-                when(usersRepository.findById(anyLong())).thenReturn(Optional.empty());
-                ResponseEntity<Object> responseEntity = restaurantService.updateRestaurant(anyLong(),
-                        RestaurantDto.builder().build());
-
-                assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
-        }
-
-        @Test
-        public void updateRestaurant_Failed3() {
-                when(cityRepository.findById(anyLong())).thenReturn(Optional.empty());
-                ResponseEntity<Object> responseEntity = restaurantService.updateRestaurant(anyLong(),
-                        RestaurantDto.builder().build());
-
-                assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
-        }
-
         // @Test
         // public void getAllRestaurant(){
         // CityDao cityDao = CityDao.builder()
