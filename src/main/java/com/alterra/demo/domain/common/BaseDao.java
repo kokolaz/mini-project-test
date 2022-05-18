@@ -41,9 +41,4 @@ public class BaseDao {
         this.updatedAt = LocalDateTime.now();
     }
 
-    @PreRemove
-    void onDelete() {
-        this.deletedAt = LocalDateTime.now();
-        this.isDeleted = true;
-    }
 }
